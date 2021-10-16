@@ -78,3 +78,6 @@ Contributing::
 
 == Releases / Changelog
 
+=== mill-jacoco 0.0.1
+
+* Initial Release
