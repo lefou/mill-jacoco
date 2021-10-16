@@ -1,0 +1,80 @@
+= mill-jacoco - Coverage Reporting for Mill
+:version: 0.0.1
+:mill-platform: 0.9
+:java-package: de.tobiasroeser.mill.jacoco
+:project-home: https://github.com/lefou/mill-jacoco
+:toc:
+:toc-placement: preamble
+
+ifdef::env-github[]
+image:https://github.com/lefou/mill-jacoco/workflows/.github/workflows/build.yml/badge.svg["Build Status (GitHub Actions)", link="https://github.com/lefou/mill-jacoco/actions"]
+// image:https://codecov.io/gh/lefou/mill-vcs-version/branch/main/graph/badge.svg[Test Coverage (Codecov.io), link="https://codecov.io/gh/lefou/mill-vcs-version"]
+endif::[]
+
+Mill plugin to collect test coverage data with https://www.jacoco.org/jacoco/[JaCoCo] and generate reports.
+
+== Quickstart
+
+You need at least Mill 0.9.7 to use `mill-jacoco`.
+
+To enable coverage data generation with JaCoCo, you need to add the `JacocoTestModule` to your tests.
+
+[source,scala,subs="attributes,verbatim"]
+----
+import mill._
+import mill.scalalib._
+import mill.define._
+
+// Load the plugin from Maven Central via ivy/coursier
+import $ivy.`de.tototec::{java-package}_mill{mill-platform}:{version}`
+import {java-package}.JacocoTestModule
+
+object main extends JavaModule {
+  object test extends super.Tests with JacocoTestModule
+}
+----
+
+= Download
+
+You can download binary releases from
+https://search.maven.org/artifact/de.tototec/{java-package}_mill{mill-platform}_2.13[Maven Central].
+
+
+Please make sure to use the correct _mill platform suffix_ matching your used mill version.
+
+.Mill Platform suffix
+[options="header"]
+|===
+| mill version  | mill platform | suffix | example
+| 0.9.7 -       | 0.9 | `_mill0.9` | ```$ivy.`de.tototec::{java-package}_mill0.9:{version}````
+|===
+
+
+== License
+
+This project is published under the https://www.apache.org/licenses/LICENSE-2.0[Apache License, Version 2.0].
+
+
+== About
+
+mill::
+  https://github.com/lihaoyi/mill[Mill] is a Scala-based open source build tool.
+  In my opinion the best build tool for the JVM.
+  It is fast, reliable and easy to understand.
+
+me::
++
+--
+https://github.com/lefou/[I'm] a professional software developer and love to write and use open source software.
+I'm actively developing and maintaining mill as well as https://github.com/lefou?utf8=%E2%9C%93&tab=repositories&q=topic%3Amill&type=&language=[several mill plugins].
+
+If you like my work, please star it on GitHub. You can also support me via https://github.com/sponsors/lefou[GitHub Sponsors].
+--
+
+Contributing::
+  If you found a bug or have a feature request, please open a {project-home}/issues[new issue on GitHub].
+  I also accept {project-home}/pulls[pull requests on GitHub].
+
+
+== Releases / Changelog
+
