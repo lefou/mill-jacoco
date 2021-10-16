@@ -74,7 +74,7 @@ trait JacocoReportModule extends CoursierModule { jacocoReportModule =>
       Seq(tasks),
       multiSelect = true
     ) match {
-      case Left(err)    => throw new Exception(err)
+      case Left(err) => throw new Exception(err)
       case Right(tasks) => tasks.asInstanceOf[Seq[Task[T]]]
     }
 
@@ -120,7 +120,7 @@ trait JacocoReportModule extends CoursierModule { jacocoReportModule =>
     }
     orig.flatMap {
       case t: NamedTask[T] if excludeLabels.contains(t.toString) => Seq()
-      case x                                                     => Seq(x)
+      case x => Seq(x)
     }
   }
 

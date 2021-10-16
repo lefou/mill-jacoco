@@ -108,7 +108,7 @@ class ItestCross(millItestVersion: String) extends MillIntegrationTestModule {
     Target.traverse(pluginsUnderTest) { p =>
       val jar = p match {
         case p: ScoverageModule => p.scoverage.jar
-        case p                  => p.jar
+        case p => p.jar
       }
       jar zip (p.sourceJar zip (p.docJar zip (p.pom zip (p.ivy zip p.artifactMetadata))))
     }
