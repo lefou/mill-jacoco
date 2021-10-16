@@ -82,9 +82,9 @@ class CoreCross(override val millApiVersion: String) extends BaseModule {
     deps.millScalalib
   )
 
-  object test extends Tests with TestModule.ScalaTest {
-    override def ivyDeps = Agg(deps.scalaTest)
-  }
+//  object test extends Tests with TestModule.ScalaTest {
+//    override def ivyDeps = Agg(deps.scalaTest)
+//  }
 }
 
 object itest extends Cross[ItestCross](millItestVersions.map(_._1): _*) with TaskModule {

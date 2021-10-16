@@ -34,7 +34,14 @@ object main extends JavaModule {
 }
 ----
 
-= Download
+To generate JaCoCo reports, run:
+
+----
+mill de.tototec.mill.jacoco.Jacoco/generateReportFull
+----
+
+
+== Download
 
 You can download binary releases from
 https://search.maven.org/artifact/de.tototec/{java-package}_mill{mill-platform}_2.13[Maven Central].
