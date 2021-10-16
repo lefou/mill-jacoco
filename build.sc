@@ -55,7 +55,7 @@ trait BaseModule extends CrossScalaModule with PublishModule with ScoverageModul
 
   def pomSettings = T {
     PomSettings(
-      description = "Mill plugin to collect test coverage data with Jacoco and generate reports",
+      description = "Mill plugin to collect test coverage data with JaCoCo and generate reports",
       organization = "de.tototec",
       url = "https://github.com/lefou/mill-jacoco",
       licenses = Seq(License.`Apache-2.0`),

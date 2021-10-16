@@ -78,6 +78,6 @@ Contributing::
 
 == Releases / Changelog
 
-=== mill-jacoco 0.0.1
+=== mill-jacoco 0.0.1 - 2021-10-16
 
 * Initial Release
