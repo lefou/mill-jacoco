@@ -36,8 +36,9 @@ object main extends JavaModule {
 
 To generate JaCoCo reports, run:
 
+[source,subs="attributes,verbatim"]
 ----
-mill de.tototec.mill.jacoco.Jacoco/generateReportFull
+mill {java-package}.Jacoco/jacocoReportFull
 ----
 
 
