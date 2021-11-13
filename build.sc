@@ -1,7 +1,7 @@
 // mill plugins
-import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version_mill0.9:0.1.2`
-import $ivy.`de.tototec::de.tobiasroeser.mill.integrationtest_mill0.9:0.4.1`
-import $ivy.`com.lihaoyi::mill-contrib-scoverage:$MILL_VERSION`
+import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version::0.1.2`
+import $ivy.`de.tototec::de.tobiasroeser.mill.integrationtest::0.4.1-26-70d7c9`
+import $ivy.`com.lihaoyi::mill-contrib-scoverage:`
 import mill._
 import mill.contrib.scoverage.ScoverageModule
 import mill.define.{Command, Target, Task, TaskModule}
@@ -27,14 +27,20 @@ trait Deps {
   def slf4j = ivy"org.slf4j:slf4j-api:1.7.25"
 }
 
+object Deps_0_10 extends Deps {
+  override def millPlatform = "0.10.0-M4"
+  override def millVersion = "0.10.0-M4" // scala-steward:off
+  override def scalaVersion = "2.13.7"
+  override def testWithMill = Seq(millVersion)
+}
 object Deps_0_9 extends Deps {
   override def millPlatform = "0.9"
   override def millVersion = "0.9.7" // scala-steward:off
-  override def scalaVersion = "2.13.6"
-  override def testWithMill = Seq("0.9.7", "0.9.8", "0.9.9")
+  override def scalaVersion = "2.13.7"
+  override def testWithMill = Seq(millVersion, "0.9.8", "0.9.9", "0.9.10")
 }
 
-val crossDeps = Seq(Deps_0_9)
+val crossDeps = Seq(Deps_0_10, Deps_0_9)
 val millApiVersions = crossDeps.map(x => x.millPlatform -> x)
 val millItestVersions = crossDeps.flatMap(x => x.testWithMill.map(_ -> x))
 
