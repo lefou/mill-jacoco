@@ -1,6 +1,7 @@
 = mill-jacoco - Coverage Reporting for Mill
-:version: 0.0.1
-:mill-platform: 0.9
+:version: 0.0.2
+:mill-platform: 0.10
+:mill-min-version: 0.9.7
 :java-package: de.tobiasroeser.mill.jacoco
 :project-home: https://github.com/lefou/mill-jacoco
 :toc:
@@ -15,7 +16,7 @@ Mill plugin to collect test coverage data with https://www.jacoco.org/jacoco/[Ja
 
 == Quickstart
 
-You need at least Mill 0.9.7 to use `mill-jacoco`.
+You need at least Mill {mill-min-version} to use `mill-jacoco`.
 
 To enable coverage data generation with JaCoCo, you need to add the `JacocoTestModule` to your tests.
 
@@ -54,6 +55,7 @@ Please make sure to use the correct _mill platform suffix_ matching your used mi
 [options="header"]
 |===
 | mill version  | mill platform | suffix | example
+| 0.10.0 -       | 0.10 | `_mill0.10` | ```$ivy.`de.tototec::{java-package}_mill0.10:{version}````
 | 0.9.7 -       | 0.9 | `_mill0.9` | ```$ivy.`de.tototec::{java-package}_mill0.9:{version}````
 |===
 
@@ -85,6 +87,10 @@ Contributing::
 
 
 == Releases / Changelog
+
+=== mill-jacoco 0.0.2 - 2022-04-12
+
+* Support for Mill 0.10
 
 === mill-jacoco 0.0.1 - 2021-10-16
 
