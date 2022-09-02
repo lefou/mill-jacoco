@@ -19,12 +19,15 @@ trait Deps {
   def scalaVersion: String
   def testWithMill: Seq[String]
 
+  def scoverageVersion = "2.0.2"
+
   def millMain = ivy"com.lihaoyi::mill-main:${millVersion}"
   def millMainApi = ivy"com.lihaoyi::mill-main-api:${millVersion}"
   def millScalalib = ivy"com.lihaoyi::mill-scalalib:${millVersion}"
   def millScalalibApi = ivy"com.lihaoyi::mill-scalalib-api:${millVersion}"
   def scalaTest = ivy"org.scalatest::scalatest:3.2.3"
   def slf4j = ivy"org.slf4j:slf4j-api:1.7.25"
+
 }
 
 object Deps_0_10 extends Deps {
@@ -70,7 +73,7 @@ trait BaseModule extends CrossScalaModule with PublishModule with ScoverageModul
     )
   }
 
-  override def scoverageVersion = "1.4.1"
+  override def scoverageVersion = deps.scoverageVersion
 
   trait Tests extends ScoverageTests
 
@@ -105,6 +108,8 @@ object itest extends Cross[ItestCross](millItestVersions.map(_._1): _*) with Tas
 }
 class ItestCross(millItestVersion: String) extends MillIntegrationTestModule {
   val millApiVersion = millItestVersions.toMap.apply(millItestVersion).millPlatform
+  def deps: Deps = millApiVersions.toMap.apply(millApiVersion)
+
   override def millSourcePath: Path = super.millSourcePath / os.up
   override def millTestVersion = millItestVersion
   override def pluginsUnderTest = Seq(core(millApiVersion))
@@ -129,4 +134,26 @@ class ItestCross(millItestVersion: String) extends MillIntegrationTestModule {
     }
   }
 
+  override def perTestResources = T.sources {
+    Seq(generatedSharedSrc())
+  }
+
+  def generatedSharedSrc = T {
+    os.write(
+      T.dest / "shared.sc",
+      s"""import $$ivy.`org.scoverage::scalac-scoverage-runtime:${deps.scoverageVersion}`
+         |""".stripMargin
+    )
+    PathRef(T.dest)
+  }
+}
+
+object scalaStewardDummy extends ScalaModule {
+  val deps = crossDeps.head
+
+  override def scalaVersion: T[String] = deps.scalaVersion
+  override def compileIvyDeps = Agg(
+    ivy"org.scoverage:::scalac-scoverage-plugin:${deps.scoverageVersion}",
+    ivy"org.scoverage::scalac-scoverage-runtime:${deps.scoverageVersion}"
+  )
 }
