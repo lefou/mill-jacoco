@@ -34,13 +34,13 @@ object Deps_0_10 extends Deps {
   override def millPlatform = "0.10"
   override def millVersion = "0.10.0" // scala-steward:off
   override def scalaVersion = "2.13.8"
-  override def testWithMill = Seq(millVersion, "0.10.1", "0.10.2", "0.10.3")
+  override def testWithMill = Seq(millVersion, "0.10.3", "0.10.7")
 }
 object Deps_0_9 extends Deps {
   override def millPlatform = "0.9"
   override def millVersion = "0.9.7" // scala-steward:off
   override def scalaVersion = "2.13.7"
-  override def testWithMill = Seq(millVersion, "0.9.8", "0.9.9", "0.9.10", "0.9.11", "0.9.12")
+  override def testWithMill = Seq(millVersion, "0.9.8", "0.9.12")
 }
 
 val crossDeps = Seq(Deps_0_10, Deps_0_9)
