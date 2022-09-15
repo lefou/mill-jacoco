@@ -19,7 +19,7 @@ trait Deps {
   def scalaVersion: String
   def testWithMill: Seq[String]
 
-  def scoverageVersion = "2.0.2"
+  def scoverageVersion = "2.0.3"
 
   def millMain = ivy"com.lihaoyi::mill-main:${millVersion}"
   def millMainApi = ivy"com.lihaoyi::mill-main-api:${millVersion}"
