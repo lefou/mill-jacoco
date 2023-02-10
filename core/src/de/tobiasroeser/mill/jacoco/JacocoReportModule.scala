@@ -3,33 +3,15 @@ package de.tobiasroeser.mill.jacoco
 import mill.api.PathRef
 import mill.define.{Command, Input, NamedTask, Task}
 import mill.api.Result
-import mill.main.RunScript
 import mill.modules.Jvm
 import mill.scalalib.api.CompilationResult
-import mill.scalalib.{CoursierModule, DepSyntax}
-import mill.{Agg, T}
+import mill.T
 import os.Path
 
-trait JacocoReportModule extends CoursierModule { jacocoReportModule =>
-
-  /** The Jacoco Version. */
-  def jacocoVersion: Input[String]
+trait JacocoReportModule extends JacocoReportModulePlatform { jacocoReportModule =>
 
   /** Location where collected coverage data is stored. */
   def jacocoDataDir: T[PathRef] = T.persistent { PathRef(T.dest) }
-
-  /** The Jacoco Agent is used at test-runtime. */
-  def jacocoAgentJar: T[PathRef] = T {
-    val jars = resolveDeps(T.task {
-      Agg(ivy"org.jacoco:org.jacoco.agent:${jacocoVersion()};classifier=runtime".exclude("*" -> "*"))
-    })()
-    jars.iterator.next()
-  }
-
-  /** THe Jacococ Classpath contains the tools used to generate reports from collected coverage data. */
-  def jacocoClasspath: T[Agg[PathRef]] = T {
-    resolveDeps(T.task { Agg(ivy"org.jacoco:org.jacoco.cli:${jacocoVersion()}") })()
-  }
 
   def forkArgs: T[Seq[String]] = Seq[String]()
 
@@ -68,20 +50,10 @@ trait JacocoReportModule extends CoursierModule { jacocoReportModule =>
       excludeCompiled: String = ""
   ): Task[PathRef] = {
 
-    def resolveTasks[T](tasks: String): Seq[Task[T]] = RunScript.resolveTasks(
-      mill.main.ResolveTasks,
-      evaluator,
-      Seq(tasks),
-      multiSelect = true
-    ) match {
-      case Left(err) => throw new Exception(err)
-      case Right(tasks) => tasks.asInstanceOf[Seq[Task[T]]]
-    }
-
-    val sourcesTasks: Seq[Task[Seq[PathRef]]] = resolveTasks(sources)
-    val excludeSourcesTasks: Seq[Task[Seq[PathRef]]] = resolveTasks(excludeSources)
-    val compiledTasks: Seq[Task[CompilationResult]] = resolveTasks(compiled)
-    val excludeCompiledTasks: Seq[Task[CompilationResult]] = resolveTasks(excludeCompiled)
+    val sourcesTasks: Seq[Task[Seq[PathRef]]] = resolveTasks(sources, evaluator)
+    val excludeSourcesTasks: Seq[Task[Seq[PathRef]]] = resolveTasks(excludeSources, evaluator)
+    val compiledTasks: Seq[Task[CompilationResult]] = resolveTasks(compiled, evaluator)
+    val excludeCompiledTasks: Seq[Task[CompilationResult]] = resolveTasks(excludeCompiled, evaluator)
 
     jacocoCliTask(
       T.task {
