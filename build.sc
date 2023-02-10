@@ -2,10 +2,12 @@
 import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version::0.3.0`
 import $ivy.`de.tototec::de.tobiasroeser.mill.integrationtest::0.6.1`
 import $ivy.`com.lihaoyi::mill-contrib-scoverage:`
+
 import mill._
 import mill.contrib.scoverage.ScoverageModule
-import mill.define.{Command, Target, Task, TaskModule}
+import mill.define.{Command, Sources, Target, Task, TaskModule}
 import mill.scalalib._
+import mill.scalalib.api.ZincWorkerUtil
 import mill.scalalib.publish._
 import de.tobiasroeser.mill.integrationtest._
 import de.tobiasroeser.mill.vcs.version._
@@ -30,20 +32,26 @@ trait Deps {
 
 }
 
+object Deps_0_11 extends Deps {
+  override def millPlatform = millVersion // only valid for exact milestone versions
+  override def millVersion = "0.11.0-M4"
+  override def scalaVersion = "2.13.10"
+  override def testWithMill = Seq(millVersion)
+}
 object Deps_0_10 extends Deps {
   override def millPlatform = "0.10"
   override def millVersion = "0.10.0" // scala-steward:off
   override def scalaVersion = "2.13.10"
-  override def testWithMill = Seq(millVersion, "0.10.3", "0.10.7")
+  override def testWithMill = Seq(millVersion, "0.10.11")
 }
 object Deps_0_9 extends Deps {
   override def millPlatform = "0.9"
   override def millVersion = "0.9.7" // scala-steward:off
   override def scalaVersion = "2.13.10"
-  override def testWithMill = Seq(millVersion, "0.9.8", "0.9.12")
+  override def testWithMill = Seq(millVersion, "0.9.12")
 }
 
-val crossDeps = Seq(Deps_0_10, Deps_0_9)
+val crossDeps = Seq(Deps_0_11, Deps_0_10, Deps_0_9)
 val millApiVersions = crossDeps.map(x => x.millPlatform -> x)
 val millItestVersions = crossDeps.flatMap(x => x.testWithMill.map(_ -> x))
 
@@ -90,6 +98,15 @@ class CoreCross(override val millApiVersion: String) extends BaseModule {
     deps.millMain,
     deps.millScalalib
   )
+
+  override def sources: Sources = T.sources {
+    val versions =
+      ZincWorkerUtil.matchingVersions(millApiVersion) ++
+        ZincWorkerUtil.versionRanges(millApiVersion, millApiVersions.map(_._1))
+
+    super.sources() ++
+      versions.map(v => PathRef(millSourcePath / s"src-${v}"))
+  }
 
 //  object test extends Tests with TestModule.ScalaTest {
 //    override def ivyDeps = Agg(deps.scalaTest)
