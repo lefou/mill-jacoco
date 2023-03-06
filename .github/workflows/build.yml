@@ -61,7 +61,7 @@ jobs:
           java-version: 8
           distribution: temurin
 
-      - run: ./millw -i __publishLocal testRepo
+      - run: ./millw -i __.publishLocal testRepo
 
       - name: Setup GPG secrets
         run: |
