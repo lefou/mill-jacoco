@@ -34,7 +34,7 @@ trait Deps {
 
 object Deps_0_11 extends Deps {
   override def millPlatform = millVersion // only valid for exact milestone versions
-  override def millVersion = "0.11.0-M7"
+  override def millVersion = "0.11.0-M10"
   override def scalaVersion = "2.13.10"
   override def testWithMill = Seq(millVersion)
 }
