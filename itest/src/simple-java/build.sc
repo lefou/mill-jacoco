@@ -1,6 +1,5 @@
 // mill plugins under test
-import $exec.plugins
-import $exec.shared
+import $file.shared
 
 import de.tobiasroeser.mill.jacoco._
 
@@ -9,7 +8,7 @@ import mill.scalalib._
 import mill.define.Command
 
 object main extends JavaModule {
-  object test extends super.Tests with JacocoTestModule with TestModule.Junit4 {
+  object test extends JavaModuleTests with JacocoTestModule with TestModule.Junit4 {
     override def ivyDeps: T[Agg[Dep]] = super.ivyDeps() ++ Agg(
       ivy"com.novocode:junit-interface:0.11",
       ivy"junit:junit:4.12"

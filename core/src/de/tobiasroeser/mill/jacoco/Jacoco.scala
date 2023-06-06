@@ -4,10 +4,7 @@ import mill.T
 import mill.api.Result.Success
 import mill.define.{Discover, ExternalModule, Input}
 
-object Jacoco extends ExternalModule with JacocoReportModule {
-
-  implicit def millScoptTasksReads[T] = new mill.main.Tasks.Scopt[T]()
-  implicit def millScoptEvaluatorReads[T] = new mill.main.EvaluatorScopt[T]()
+object Jacoco extends ExternalModule with JacocoReportModule with JacocoPlatform {
 
   override def millDiscover: Discover[Jacoco.this.type] = Discover[this.type]
 

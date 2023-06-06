@@ -2,9 +2,10 @@ package de.tobiasroeser.mill.jacoco
 
 import mill.{Agg, T}
 import mill.api.PathRef
-import mill.define.{Input, SelectMode, Task}
+import mill.define.{Input, Task}
 import mill.eval.Evaluator
 import mill.main.RunScript
+import mill.resolve.{Resolve, SelectMode}
 import mill.scalalib.{CoursierModule, DepSyntax}
 
 trait JacocoReportModulePlatform extends CoursierModule {
@@ -29,14 +30,11 @@ trait JacocoReportModulePlatform extends CoursierModule {
     jars.iterator.next()
   }
 
-  protected[jacoco] def resolveTasks[T](tasks: String, evaluator: Evaluator): Seq[Task[T]] = RunScript.resolveTasks(
-    mill.main.ResolveTasks,
-    evaluator,
-    Seq(tasks),
-    selectMode = SelectMode.Multi
-  ) match {
-    case Left(err) => throw new Exception(err)
-    case Right(tasks) => tasks.asInstanceOf[Seq[Task[T]]]
+  protected[jacoco] def resolveTasks[T](tasks: String, evaluator: Evaluator): Seq[Task[T]] = {
+    Resolve.Tasks.resolve(evaluator.rootModule, Seq(tasks), SelectMode.Multi) match {
+      case Left(err) => throw new Exception(err)
+      case Right(tasks) => tasks.asInstanceOf[Seq[Task[T]]]
+    }
   }
 
 
