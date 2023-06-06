@@ -33,8 +33,8 @@ trait Deps {
 }
 
 object Deps_0_11 extends Deps {
-  override def millPlatform = millVersion // only valid for exact milestone versions
-  override def millVersion = "0.11.0-M7"
+  override def millPlatform = "0.11.0-M8" // only valid for exact milestone versions
+  override def millVersion = "0.11.0-M8-2-f5e4e2"
   override def scalaVersion = "2.13.10"
   override def testWithMill = Seq(millVersion)
 }
@@ -158,7 +158,9 @@ class ItestCross(millItestVersion: String) extends MillIntegrationTestModule {
   def generatedSharedSrc = T {
     os.write(
       T.dest / "shared.sc",
-      s"""import $$ivy.`org.scoverage::scalac-scoverage-runtime:${deps.scoverageVersion}`
+      s"""
+         |import $$file.plugins
+         |import $$ivy.`org.scoverage::scalac-scoverage-runtime:${deps.scoverageVersion}`
          |""".stripMargin
     )
     PathRef(T.dest)
