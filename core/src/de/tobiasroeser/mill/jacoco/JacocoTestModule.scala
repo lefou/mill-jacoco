@@ -1,10 +1,10 @@
 package de.tobiasroeser.mill.jacoco
 
 import mill.define.{Input, Target}
-import mill.scalalib.{Dep, DepSyntax, TestModule}
+import mill.scalalib.{Dep, DepSyntax, JavaModule, TestModule}
 import mill.{Agg, T}
 
-trait JacocoTestModule extends TestModule {
+trait JacocoTestModule extends JavaModule with TestModule {
 
   def jacocoReportModule: JacocoReportModule = Jacoco
 

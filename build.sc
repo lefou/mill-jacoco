@@ -18,7 +18,7 @@ val baseDir = build.millSourcePath
 trait Deps {
   def millPlatform: String
   def millVersion: String
-  def scalaVersion: String
+  def scalaVersion: String = "2.13.11"
   def testWithMill: Seq[String]
 
   def scoverageVersion = "2.0.10"
@@ -33,21 +33,18 @@ trait Deps {
 }
 
 object Deps_0_11 extends Deps {
-  override def millPlatform = "0.11.0-M8" // only valid for exact milestone versions
-  override def millVersion = "0.11.0-M8-2-f5e4e2"
-  override def scalaVersion = "2.13.10"
+  override def millPlatform = "0.11.0-M11" // only valid for exact milestone versions
+  override def millVersion = "0.11.0-M11"
   override def testWithMill = Seq(millVersion)
 }
 object Deps_0_10 extends Deps {
   override def millPlatform = "0.10"
   override def millVersion = "0.10.0" // scala-steward:off
-  override def scalaVersion = "2.13.10"
   override def testWithMill = Seq(millVersion, "0.10.11")
 }
 object Deps_0_9 extends Deps {
   override def millPlatform = "0.9"
   override def millVersion = "0.9.7" // scala-steward:off
-  override def scalaVersion = "2.13.10"
   override def testWithMill = Seq(millVersion, "0.9.12")
 }
 
