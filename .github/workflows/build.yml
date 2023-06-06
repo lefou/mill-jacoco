@@ -1,4 +1,10 @@
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - '**'
+  pull_request:
 
 # cancel older runs of a pull request;
 # this will not cancel anything for normal git pushes
