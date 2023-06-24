@@ -1,6 +1,6 @@
 = mill-jacoco - Coverage Reporting for Mill
-:version: 0.0.2
-:mill-platform: 0.10
+:version: 0.0.3
+:mill-platform: 0.11
 :mill-min-version: 0.9.7
 :java-package: de.tobiasroeser.mill.jacoco
 :project-home: https://github.com/lefou/mill-jacoco
@@ -27,7 +27,7 @@ import mill.scalalib._
 import mill.define._
 
 // Load the plugin from Maven Central via ivy/coursier
-import $ivy.`de.tototec::{java-package}_mill{mill-platform}:{version}`
+import $ivy.`de.tototec::{java-package}::{version}`
 import {java-package}.JacocoTestModule
 
 object main extends JavaModule {
@@ -50,14 +50,6 @@ https://search.maven.org/artifact/de.tototec/{java-package}_mill{mill-platform}_
 
 
 Please make sure to use the correct _mill platform suffix_ matching your used mill version.
-
-.Mill Platform suffix
-[options="header"]
-|===
-| mill version  | mill platform | suffix | example
-| 0.10.0 -       | 0.10 | `_mill0.10` | ```$ivy.`de.tototec::{java-package}_mill0.10:{version}````
-| 0.9.7 -       | 0.9 | `_mill0.9` | ```$ivy.`de.tototec::{java-package}_mill0.9:{version}````
-|===
 
 
 == License
@@ -87,6 +79,11 @@ Contributing::
 
 
 == Releases / Changelog
+
+=== 0.0.3 - 2023-06-24
+
+* Support for Mill 0.11
+* Dependency updates
 
 === mill-jacoco 0.0.2 - 2022-04-12
 
