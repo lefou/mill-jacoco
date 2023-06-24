@@ -33,8 +33,8 @@ trait Deps {
 }
 
 object Deps_0_11 extends Deps {
-  override def millPlatform = "0.11.0-M11" // only valid for exact milestone versions
-  override def millVersion = "0.11.0-M11"
+  override def millPlatform = "0.11" // only valid for exact milestone versions
+  override def millVersion = "0.11.0" // scala-steward:off
   override def testWithMill = Seq(millVersion)
 }
 object Deps_0_10 extends Deps {
