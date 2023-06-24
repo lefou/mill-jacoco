@@ -5,15 +5,13 @@ import $ivy.`com.lihaoyi::mill-contrib-scoverage:`
 
 import mill._
 import mill.contrib.scoverage.ScoverageModule
-import mill.define.{Command, Sources, Target, Task, TaskModule}
+import mill.define.{Command, Cross, Sources, Target, Task, TaskModule}
 import mill.scalalib._
 import mill.scalalib.api.ZincWorkerUtil
 import mill.scalalib.publish._
 import de.tobiasroeser.mill.integrationtest._
 import de.tobiasroeser.mill.vcs.version._
 import os.Path
-
-val baseDir = build.millSourcePath
 
 trait Deps {
   def millPlatform: String
@@ -29,7 +27,6 @@ trait Deps {
   def millScalalibApi = ivy"com.lihaoyi::mill-scalalib-api:${millVersion}"
   def scalaTest = ivy"org.scalatest::scalatest:3.2.3"
   def slf4j = ivy"org.slf4j:slf4j-api:1.7.25"
-
 }
 
 object Deps_0_11 extends Deps {
@@ -52,10 +49,10 @@ val crossDeps = Seq(Deps_0_11, Deps_0_10, Deps_0_9)
 val millApiVersions = crossDeps.map(x => x.millPlatform -> x)
 val millItestVersions = crossDeps.flatMap(x => x.testWithMill.map(_ -> x))
 
-trait BaseModule extends CrossScalaModule with PublishModule with ScoverageModule {
-  def millApiVersion: String
+trait BaseModule extends ScalaModule with PublishModule with ScoverageModule with Cross.Module[String] {
+  def millApiVersion: String = crossValue
   def deps: Deps = millApiVersions.toMap.apply(millApiVersion)
-  def crossScalaVersion = deps.scalaVersion
+  override def scalaVersion = deps.scalaVersion
   override def artifactSuffix: T[String] = s"_mill${deps.millPlatform}_${artifactScalaVersion()}"
 
   override def ivyDeps = T {
@@ -84,8 +81,8 @@ trait BaseModule extends CrossScalaModule with PublishModule with ScoverageModul
 
 }
 
-object core extends Cross[CoreCross](millApiVersions.map(_._1): _*)
-class CoreCross(override val millApiVersion: String) extends BaseModule {
+object core extends Cross[CoreCross](millApiVersions.map(_._1))
+trait CoreCross extends BaseModule {
 
   override def artifactName = "de.tobiasroeser.mill.jacoco"
 
@@ -96,7 +93,7 @@ class CoreCross(override val millApiVersion: String) extends BaseModule {
     deps.millScalalib
   )
 
-  override def sources: Sources = T.sources {
+  override def sources = T.sources {
     val versions =
       ZincWorkerUtil.matchingVersions(millApiVersion) ++
         ZincWorkerUtil.versionRanges(millApiVersion, millApiVersions.map(_._1))
@@ -110,26 +107,15 @@ class CoreCross(override val millApiVersion: String) extends BaseModule {
 //  }
 }
 
-object itest extends Cross[ItestCross](millItestVersions.map(_._1): _*) with TaskModule {
-  override def defaultCommandName(): String = "test"
-  def test(args: String*): Command[Seq[TestCase]] = T.command {
-    T.traverse(millModuleDirectChildren.collect { case m: ItestCross => m }.headOption.toSeq)(_.test(args: _*))()
-      .flatten
-  }
-  def testCached: T[Seq[TestCase]] = T {
-    T.traverse(millModuleDirectChildren.collect { case m: ItestCross => m }.headOption.toSeq)(_.testCached)().flatten
-  }
-}
-class ItestCross(millItestVersion: String) extends MillIntegrationTestModule {
-  val millApiVersion = millItestVersions.toMap.apply(millItestVersion).millPlatform
+object itest extends Cross[ItestCross](millItestVersions.map(_._1))
+trait ItestCross extends MillIntegrationTestModule with Cross.Module[String] {
+  val millApiVersion = millItestVersions.toMap.apply(crossValue).millPlatform
   def deps: Deps = millApiVersions.toMap.apply(millApiVersion)
-
-  override def millSourcePath: Path = super.millSourcePath / os.up
-  override def millTestVersion = millItestVersion
+  override def millTestVersion = crossValue
   override def pluginsUnderTest = Seq(core(millApiVersion))
 
   /** Replaces the plugin jar with a scoverage-enhanced version of it. */
-  override def pluginUnderTestDetails: Task.Sequence[(PathRef, (PathRef, (PathRef, (PathRef, (PathRef, Artifact)))))] =
+  override def pluginUnderTestDetails: Task[Seq[(PathRef, (PathRef, (PathRef, (PathRef, (PathRef, Artifact)))))]] =
     Target.traverse(pluginsUnderTest) { p =>
       val jar = p match {
         case p: ScoverageModule => p.scoverage.jar
@@ -138,7 +124,7 @@ class ItestCross(millItestVersion: String) extends MillIntegrationTestModule {
       jar zip (p.sourceJar zip (p.docJar zip (p.pom zip (p.ivy zip p.artifactMetadata))))
     }
 
-  override def testInvocations: Target[Seq[(PathRef, Seq[TestInvocation.Targets])]] = T {
+  override def testInvocations: T[Seq[(PathRef, Seq[TestInvocation.Targets])]] = T {
     super.testInvocations().map { case (pr, _) =>
       pr -> Seq(
         TestInvocation.Targets(Seq("-d", "__.test")),
