@@ -16,7 +16,7 @@ import os.Path
 trait Deps {
   def millPlatform: String
   def millVersion: String
-  def scalaVersion: String = "2.13.11"
+  def scalaVersion: String = "2.13.12"
   def testWithMill: Seq[String]
 
   def scoverageVersion = "2.0.11"
