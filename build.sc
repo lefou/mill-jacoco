@@ -77,8 +77,6 @@ trait BaseModule extends ScalaModule with PublishModule with ScoverageModule wit
 
   override def scoverageVersion = deps.scoverageVersion
 
-  trait Tests extends ScoverageTests
-
 }
 
 object core extends Cross[CoreCross](millApiVersions.map(_._1))
@@ -101,10 +99,6 @@ trait CoreCross extends BaseModule {
     super.sources() ++
       versions.map(v => PathRef(millSourcePath / s"src-${v}"))
   }
-
-//  object test extends Tests with TestModule.ScalaTest {
-//    override def ivyDeps = Agg(deps.scalaTest)
-//  }
 }
 
 object itest extends Cross[ItestCross](millItestVersions.map(_._1))
@@ -113,6 +107,15 @@ trait ItestCross extends MillIntegrationTestModule with Cross.Module[String] {
   def deps: Deps = millApiVersions.toMap.apply(millApiVersion)
   override def millTestVersion = crossValue
   override def pluginsUnderTest = Seq(core(millApiVersion))
+
+  override def sources = T.sources {
+    val versions =
+      ZincWorkerUtil.matchingVersions(millApiVersion) ++
+        ZincWorkerUtil.versionRanges(millApiVersion, millApiVersions.map(_._1))
+
+    super.sources() ++
+      versions.map(v => PathRef(millSourcePath / s"src-${v}"))
+  }
 
   /** Replaces the plugin jar with a scoverage-enhanced version of it. */
   override def pluginUnderTestDetails: Task[Seq[(PathRef, (PathRef, (PathRef, (PathRef, (PathRef, Artifact)))))]] =
@@ -129,7 +132,7 @@ trait ItestCross extends MillIntegrationTestModule with Cross.Module[String] {
       pr -> Seq(
         TestInvocation.Targets(Seq("-d", "__.test")),
         TestInvocation.Targets(Seq("-d", "de.tobiasroeser.mill.jacoco.Jacoco/jacocoReportFull")),
-        TestInvocation.Targets(Seq("-d", "verify"))
+        TestInvocation.Targets(Seq("-d", "verify", millApiVersion))
       )
     }
   }
