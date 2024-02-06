@@ -35,10 +35,10 @@ trait JacocoReportModule extends JacocoReportModulePlatform { jacocoReportModule
   def jacocoReportFull(evaluator: mill.eval.Evaluator): Command[PathRef] = T.command {
     jacocoReportTask(
       evaluator = evaluator,
-      sources = "__.allSources",
-      compiled = "__.compile",
-      excludeSources = "__.test.allSources",
-      excludeCompiled = "__.test.compile"
+      sources = sourcesSelector,
+      compiled = compileSelector,
+      excludeSources = excludeSourcesSelector,
+      excludeCompiled = excludeCompiledSelector
     )()
   }
 

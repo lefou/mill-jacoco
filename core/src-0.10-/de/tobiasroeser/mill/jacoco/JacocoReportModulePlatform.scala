@@ -27,15 +27,20 @@ trait JacocoReportModulePlatform extends CoursierModule {
     jars.iterator.next()
   }
 
-  protected[jacoco] def resolveTasks[T](tasks: String, evaluator: Evaluator): Seq[Task[T]] = RunScript.resolveTasks(
-    mill.main.ResolveTasks,
-    evaluator,
-    Seq(tasks),
-    multiSelect = true
-  ) match {
-    case Left(err) => throw new Exception(err)
-    case Right(tasks) => tasks.asInstanceOf[Seq[Task[T]]]
-  }
+  protected[jacoco] def resolveTasks[T](tasks: String, evaluator: Evaluator): Seq[Task[T]] =
+    if (tasks.trim().isEmpty()) Seq()
+    else RunScript.resolveTasks(
+      mill.main.ResolveTasks,
+      evaluator,
+      Seq(tasks),
+      multiSelect = true
+    ) match {
+      case Left(err) => throw new Exception(err)
+      case Right(tasks) => tasks.asInstanceOf[Seq[Task[T]]]
+    }
 
+  protected[jacoco] val (sourcesSelector, compileSelector, excludeSourcesSelector, excludeCompiledSelector) = {
+    ("__.allSources", "__.compile", "__.test.allSources", "__.test.compile")
+  }
 
 }
