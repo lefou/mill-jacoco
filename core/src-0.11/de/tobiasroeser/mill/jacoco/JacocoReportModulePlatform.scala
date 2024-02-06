@@ -39,7 +39,7 @@ trait JacocoReportModulePlatform extends CoursierModule {
   }
 
   protected[jacoco] val (sourcesSelector, compileSelector, excludeSourcesSelector, excludeCompiledSelector) = {
-    // since version 0.11.7 Mill support type selectors in target queries
+    // since version 0.11.7 Mill supports type selectors in target queries
     // https://github.com/com-lihaoyi/mill/pull/2997
     if (
       Version.parse(mill.api.BuildInfo.millVersion).isAtLeast(Version.parse("0.11.7"))(
