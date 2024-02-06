@@ -1,5 +1,5 @@
 = mill-jacoco - Coverage Reporting for Mill
-:version: 0.0.3
+:version: 0.0.4
 :mill-platform: 0.11
 :mill-min-version: 0.9.7
 :java-package: de.tobiasroeser.mill.jacoco
@@ -80,15 +80,19 @@ Contributing::
 
 == Releases / Changelog
 
+=== 0.0.4 - 2024-02-06
+
+* Better detect Mill test modules to exclude their files / classes from coverage reports. Requires at least Mill `0.11.7`.
+
 === 0.0.3 - 2023-06-24
 
 * Support for Mill 0.11
 * Dependency updates
 
-=== mill-jacoco 0.0.2 - 2022-04-12
+=== 0.0.2 - 2022-04-12
 
 * Support for Mill 0.10
 
-=== mill-jacoco 0.0.1 - 2021-10-16
+=== 0.0.1 - 2021-10-16
 
 * Initial Release
