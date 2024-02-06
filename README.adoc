@@ -7,11 +7,6 @@
 :toc:
 :toc-placement: preamble
 
-ifdef::env-github[]
-image:https://github.com/lefou/mill-jacoco/workflows/.github/workflows/build.yml/badge.svg["Build Status (GitHub Actions)", link="https://github.com/lefou/mill-jacoco/actions"]
-// image:https://codecov.io/gh/lefou/mill-vcs-version/branch/main/graph/badge.svg[Test Coverage (Codecov.io), link="https://codecov.io/gh/lefou/mill-vcs-version"]
-endif::[]
-
 Mill plugin to collect test coverage data with https://www.jacoco.org/jacoco/[JaCoCo] and generate reports.
 
 == Quickstart
