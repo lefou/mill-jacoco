@@ -16,10 +16,10 @@ import os.Path
 trait Deps {
   def millPlatform: String
   def millVersion: String
-  def scalaVersion: String = "2.13.12"
+  def scalaVersion: String = Deps.scalaVersion
   def testWithMill: Seq[String]
 
-  def scoverageVersion = "2.0.11"
+  def scoverageVersion = Deps.scoverageVersion
 
   def millMain = ivy"com.lihaoyi::mill-main:${millVersion}"
   def millMainApi = ivy"com.lihaoyi::mill-main-api:${millVersion}"
@@ -27,6 +27,15 @@ trait Deps {
   def millScalalibApi = ivy"com.lihaoyi::mill-scalalib-api:${millVersion}"
   def scalaTest = ivy"org.scalatest::scalatest:3.2.3"
   def slf4j = ivy"org.slf4j:slf4j-api:1.7.25"
+}
+object Deps {
+  def scoverageVersion = "2.0.11"
+  def scalaVersion = "2.13.12"
+  val dummyDeps = Seq(
+    ivy"org.scoverage:::scalac-scoverage-plugin:${scoverageVersion}",
+    ivy"org.scoverage::scalac-scoverage-runtime:${scoverageVersion}",
+    ivy"org.jacoco:org.jacoco.cli:0.8.11"
+  )
 }
 
 object Deps_0_11 extends Deps {
@@ -153,12 +162,17 @@ trait ItestCross extends MillIntegrationTestModule with Cross.Module[String] {
   }
 }
 
-object scalaStewardDummy extends ScalaModule {
-  val deps = crossDeps.head
+implicit object DepSegment extends Cross.ToSegments[Dep]({ dep =>
+  val d = Lib.depToDependency(dep, Deps.scalaVersion)
+  List(s"${d.module.organization.value}:${d.module.name.value}:${d.version}")
+})
 
-  override def scalaVersion: T[String] = deps.scalaVersion
-  override def compileIvyDeps = Agg(
-    ivy"org.scoverage:::scalac-scoverage-plugin:${deps.scoverageVersion}",
-    ivy"org.scoverage::scalac-scoverage-runtime:${deps.scoverageVersion}"
-  )
+/**
+ * Dummy module(s) to let Dependency/showUpdates or Scala-Steward find
+ * and bump dependency versions we use at runtime
+ */
+object scalaStewardDummy extends Cross[DependencyFetchDummy](Deps.dummyDeps)
+trait DependencyFetchDummy extends ScalaModule with Cross.Module[Dep] {
+  def scalaVersion = Deps.scalaVersion
+  def compileIvyDeps = Agg(crossValue)
 }
