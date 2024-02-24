@@ -29,7 +29,7 @@ trait Deps {
   def slf4j = ivy"org.slf4j:slf4j-api:1.7.25"
 }
 object Deps {
-  def scoverageVersion = "2.0.11"
+  def scoverageVersion = "2.1.0"
   def scalaVersion = "2.13.12"
   val dummyDeps = Seq(
     ivy"org.scoverage:::scalac-scoverage-plugin:${scoverageVersion}",
@@ -163,9 +163,9 @@ trait ItestCross extends MillIntegrationTestModule with Cross.Module[String] {
 }
 
 implicit object DepSegment extends Cross.ToSegments[Dep]({ dep =>
-  val d = Lib.depToDependency(dep, Deps.scalaVersion)
-  List(s"${d.module.organization.value}:${d.module.name.value}:${d.version}")
-})
+      val d = Lib.depToDependency(dep, Deps.scalaVersion)
+      List(s"${d.module.organization.value}:${d.module.name.value}:${d.version}")
+    })
 
 /**
  * Dummy module(s) to let Dependency/showUpdates or Scala-Steward find
