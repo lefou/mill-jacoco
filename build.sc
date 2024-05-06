@@ -29,7 +29,7 @@ trait Deps {
   def slf4j = ivy"org.slf4j:slf4j-api:1.7.25"
 }
 object Deps {
-  def scoverageVersion = "2.1.0"
+  def scoverageVersion = "2.1.1"
   def scalaVersion = "2.13.13"
   val dummyDeps = Seq(
     ivy"org.scoverage:::scalac-scoverage-plugin:${scoverageVersion}",
