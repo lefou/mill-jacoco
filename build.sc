@@ -30,7 +30,7 @@ trait Deps {
 }
 object Deps {
   def scoverageVersion = "2.2.0"
-  def scalaVersion = "2.13.14"
+  def scalaVersion = "2.13.15"
   val dummyDeps = Seq(
     ivy"org.scoverage:::scalac-scoverage-plugin:${scoverageVersion}",
     ivy"org.scoverage::scalac-scoverage-runtime:${scoverageVersion}",
