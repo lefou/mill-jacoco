@@ -17,10 +17,13 @@ object main extends JavaModule {
 }
 
 def verify(millVersion: String): Command[Unit] = T.command {
-  val destDir =
+  val destDir = {
     if (millVersion.startsWith("0.9")) "jacocoReportFull" :: "dest" :: Nil
     else "jacocoReportFull.dest" :: Nil
-  val jacocoPath = os.pwd / "out" / "de" / "tobiasroeser" / "mill" / "jacoco" / "Jacoco" / destDir
+  }
+  // works for Mill 0.9 to 0.12
+  val workspace = build.millSourcePath
+  val jacocoPath = workspace / "out" / "de" / "tobiasroeser" / "mill" / "jacoco" / "Jacoco" / destDir
 
   val xml = jacocoPath / "jacoco.xml"
   assert(os.exists(jacocoPath))
