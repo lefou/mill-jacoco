@@ -20,7 +20,7 @@ def verify(millVersion: String): Command[Unit] = T.command {
   val destDir =
     if (millVersion.startsWith("0.9")) "jacocoReportFull" :: "dest" :: Nil
     else "jacocoReportFull.dest" :: Nil
-  val jacocoPath = os.pwd / "out" / "de" / "tobiasroeser" / "mill" / "jacoco" / "Jacoco" / destDir
+  val jacocoPath = T.workspace / "out" / "de" / "tobiasroeser" / "mill" / "jacoco" / "Jacoco" / destDir
 
   val xml = jacocoPath / "jacoco.xml"
   assert(os.exists(jacocoPath))

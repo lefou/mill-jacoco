@@ -41,7 +41,7 @@ object Deps {
 object Deps_0_11 extends Deps {
   override def millPlatform = "0.11" // only valid for exact milestone versions
   override def millVersion = "0.11.0" // scala-steward:off
-  override def testWithMill = Seq("0.11.7", "0.11.6", millVersion)
+  override def testWithMill = Seq("0.12.15", "0.11.13", millVersion)
 }
 object Deps_0_10 extends Deps {
   override def millPlatform = "0.10"
@@ -141,7 +141,7 @@ trait ItestCross extends MillIntegrationTestModule with Cross.Module[String] {
       pr -> Seq(
         TestInvocation.Targets(Seq("-d", "__.test")),
         TestInvocation.Targets(Seq("-d", "de.tobiasroeser.mill.jacoco.Jacoco/jacocoReportFull")),
-        TestInvocation.Targets(Seq("-d", "verify", millApiVersion))
+        TestInvocation.Targets(Seq("-d", "verify", "--millVersion", crossValue))
       )
     }
   }
