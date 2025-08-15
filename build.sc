@@ -1,6 +1,6 @@
 // mill plugins
 import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version::0.4.1`
-import $ivy.`de.tototec::de.tobiasroeser.mill.integrationtest::0.7.1`
+import $ivy.`de.tototec::de.tobiasroeser.mill.integrationtest::0.7.3`
 import $ivy.`com.lihaoyi::mill-contrib-scoverage:`
 
 import mill._
@@ -29,12 +29,12 @@ trait Deps {
   def slf4j = ivy"org.slf4j:slf4j-api:1.7.25"
 }
 object Deps {
-  def scoverageVersion = "2.2.1"
-  def scalaVersion = "2.13.14"
+  def scoverageVersion = "2.3.0"
+  def scalaVersion = "2.13.16"
   val dummyDeps = Seq(
     ivy"org.scoverage:::scalac-scoverage-plugin:${scoverageVersion}",
     ivy"org.scoverage::scalac-scoverage-runtime:${scoverageVersion}",
-    ivy"org.jacoco:org.jacoco.cli:0.8.11"
+    ivy"org.jacoco:org.jacoco.cli:0.8.13"
   )
 }
 
