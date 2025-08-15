@@ -34,7 +34,7 @@ object Deps {
   val dummyDeps = Seq(
     ivy"org.scoverage:::scalac-scoverage-plugin:${scoverageVersion}",
     ivy"org.scoverage::scalac-scoverage-runtime:${scoverageVersion}",
-    ivy"org.jacoco:org.jacoco.cli:0.8.11"
+    ivy"org.jacoco:org.jacoco.cli:0.8.13"
   )
 }
 
