@@ -41,9 +41,9 @@ jobs:
         if: matrix.os == 'windows-latest'
 
       # Test
-      - run: ./millw -i -k __.test
+      - run: ./millw -i -k -j 1 __.test
         if: matrix.os != 'windows-latest'
-      - run: ./millw.bat -i -k __.test
+      - run: ./millw.bat -i -k -j 1 __.test
         if: matrix.os == 'windows-latest'
 
       # Coverage
