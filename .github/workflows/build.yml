@@ -35,9 +35,9 @@ jobs:
           distribution: temurin
 
       # Check publishing
-      - run: ./millw -i __.publishLocal $(pwd)/testRepo
+      - run: ./millw -i __.publishLocal --local-ivy-repo $(pwd)/testRepo
         if: matrix.os != 'windows-latest'
-      - run: .\millw.bat -i __.publishLocal %GITHUB_WORKSPACE%/testRepo
+      - run: .\millw.bat -i __.publishLocal --local-ivy-repo %GITHUB_WORKSPACE%/testRepo
         if: matrix.os == 'windows-latest'
 
       # Test
