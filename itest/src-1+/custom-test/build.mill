@@ -1,0 +1,33 @@
+package build
+
+import de.tobiasroeser.mill.jacoco._
+
+import mill._
+import mill.api._
+import mill.scalalib._
+
+object main extends JavaModule {
+  // no tests in here
+  object test extends JavaTests with JacocoTestModule with TestModule.Junit4
+  // but here
+  object customTest extends JavaTests with JacocoTestModule with TestModule.Junit4 {
+    override def mvnDeps: T[Seq[Dep]] = super.mvnDeps() ++ Seq(
+      mvn"com.novocode:junit-interface:0.11",
+      mvn"junit:junit:4.12"
+    )
+  }
+}
+
+def verify(millVersion: String): Task.Command[Unit] = Task.Command {
+  val jacocoPath =
+    BuildCtx.workspaceRoot / "out/de/tobiasroeser/mill/jacoco/Jacoco/jacocoReportFull.dest"
+  val xml = jacocoPath / "jacoco.xml"
+  assert(os.exists(jacocoPath))
+  assert(os.exists(xml))
+  val contents = os.read(xml)
+  assert(contents.contains("""<class name="test/Main" sourcefilename="Main.java">"""))
+  assert(contents.contains("""<sourcefile name="Main.java">"""))
+  // this file should be excluded from report, as it belongs to the test sources
+  assert(!contents.contains("""<class name="test/MainTest" sourcefilename="MainTest.java">"""))
+  ()
+}

@@ -1,5 +1,5 @@
 // mill plugins under test
-import $file.shared
+//import $file.shared
 
 import de.tobiasroeser.mill.jacoco._
 
