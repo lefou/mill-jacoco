@@ -1,0 +1,27 @@
+package build
+
+import mill.*
+import mill.scalalib.*
+import mill.api.*
+import de.tobiasroeser.mill.jacoco.*
+
+object main extends JavaModule {
+  object test extends JavaTests with JacocoTestModule with TestModule.Junit4 {
+    override def mvnDeps: T[Seq[Dep]] = super.mvnDeps() ++ Seq(
+      mvn"com.novocode:junit-interface:0.11",
+      mvn"junit:junit:4.12"
+    )
+  }
+}
+
+def verify(millVersion: String): Command[Unit] = Task.Command {
+  val jacocoPath = BuildCtx.workspaceRoot / "out/de/tobiasroeser/mill/jacoco/Jacoco/jacocoReportFull.dest"
+
+  val xml = jacocoPath / "jacoco.xml"
+  assert(os.exists(jacocoPath))
+  assert(os.exists(xml))
+  val contents = os.read(xml)
+  assert(contents.contains("""<class name="test/Main" sourcefilename="Main.java">"""))
+  assert(contents.contains("""<sourcefile name="Main.java">"""))
+  ()
+}
