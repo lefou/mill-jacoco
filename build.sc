@@ -68,11 +68,9 @@ trait BaseModule extends ScalaModule with PublishModule with ScoverageModule wit
   def millApiVersion: String = crossValue
   def deps: Deps = millApiVersions.toMap.apply(millApiVersion)
   override def scalaVersion = deps.scalaVersion
-//  override def artifactSuffix: T[String] = s"_mill${deps.millPlatform}_${artifactScalaVersion()}"
   override def platformSuffix = s"_mill${deps.millPlatform}"
 
   override def ivyDeps = T {
-//    Agg(ivy"${scalaOrganization()}:scala-library:${scalaVersion()}")
     if (deps.millPlatform.startsWith("0.")) {
       Agg(mvn"${scalaOrganization()}:scala-library:${scalaVersion()}")
     } else {
