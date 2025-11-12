@@ -13,16 +13,15 @@ Mill plugin to collect test coverage data with https://www.jacoco.org/jacoco/[Ja
 
 You need at least Mill {mill-min-version} to use `mill-jacoco`.
 
-To enable coverage data generation with JaCoCo, you need to add the `JacocoTestModule` to your tests.
+To enable coverage data generation with JaCoCo, add the `JacocoTestModule` to your test module.
 
 [source,scala,subs="+attributes"]
 ----
 //| mvnDeps: [ "de.tototec::{java-package}::{version}" ]
 package build
 
-import mill._
-import mill.scalalib._
-import mill.define._
+import mill.*
+import mill.scalalib.*
 
 import {java-package}.JacocoTestModule
 
