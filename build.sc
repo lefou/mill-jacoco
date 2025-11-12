@@ -173,16 +173,16 @@ trait ItestCross extends MillIntegrationTestModule with Cross.Module[String] {
   }
 
   def generatedSharedSrc = T {
-//    if(deps.millVersion.startsWith("0.")) {
-//    os.write(
-//      T.dest / "shared.sc",
-//      s"""
-//         |import $$file.plugins
-//         |import $$ivy.`org.scoverage::scalac-scoverage-runtime:${deps.scoverageVersion}`
-//         |""".stripMargin
-//    )
-//
-//    }
+    if (deps.millVersion.startsWith("0.")) {
+      os.write(
+        T.dest / "shared.sc",
+        s"""
+           |import $$file.plugins
+           |import $$ivy.`org.scoverage::scalac-scoverage-runtime:${deps.scoverageVersion}`
+           |""".stripMargin
+      )
+
+    }
 //    else {
 //      val artifactMetadata = Target.sequence(pluginsUnderTest.map(_.artifactMetadata))()
 //      val mvnDeps = artifactMetadata.map { dep =>
