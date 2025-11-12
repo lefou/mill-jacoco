@@ -1,6 +1,6 @@
 = mill-jacoco - Coverage Reporting for Mill
-:version: 0.0.4
-:mill-platform: 0.11
+:version: 0.0.4-xxx
+:mill-platform: 1
 :mill-min-version: 0.9.7
 :java-package: de.tobiasroeser.mill.jacoco
 :project-home: https://github.com/lefou/mill-jacoco
@@ -15,26 +15,27 @@ You need at least Mill {mill-min-version} to use `mill-jacoco`.
 
 To enable coverage data generation with JaCoCo, you need to add the `JacocoTestModule` to your tests.
 
-[source,scala,subs="attributes,verbatim"]
+[source,scala,subs="+attributes"]
 ----
+//| mvnDeps: [ "de.tototec::{java-package}::{version}" ]
+package build
+
 import mill._
 import mill.scalalib._
 import mill.define._
 
-// Load the plugin from Maven Central via ivy/coursier
-import $ivy.`de.tototec::{java-package}::{version}`
 import {java-package}.JacocoTestModule
 
 object main extends JavaModule {
-  object test extends super.Tests with JacocoTestModule
+  object test extends JavaTests with JacocoTestModule
 }
 ----
 
 To generate JaCoCo reports, run:
 
-[source,subs="attributes,verbatim"]
+[,console,subs="+attributes"]
 ----
-mill {java-package}.Jacoco/jacocoReportFull
+> mill {java-package}.Jacoco/jacocoReportFull
 ----
 
 
@@ -74,6 +75,10 @@ Contributing::
 
 
 == Releases / Changelog
+
+=== `main`
+
+* Add support for Mill 1.0
 
 === 0.0.4 - 2024-02-06
 
