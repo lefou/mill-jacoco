@@ -183,37 +183,7 @@ trait ItestCross extends MillIntegrationTestModule with Cross.Module[String] {
       )
 
     }
-//    else {
-//      val artifactMetadata = Target.sequence(pluginsUnderTest.map(_.artifactMetadata))()
-//      val mvnDeps = artifactMetadata.map { dep =>
-//        s"""mvn"${dep.group}:${dep.id}:${dep.version}""""
-//      }
-//
-//      os.write(
-//        T.dest / "mill-build/build.mill",
-//        s"""import mill._, mill.api._, mill.meta._, mill.scalalib._
-//           |
-//           |object `package` extends MillBuildRootModule {
-//           |  def mvnDeps = Seq(
-//           |    // the plugin under test
-//           |    ${mvnDeps.mkString(", ")},
-//           |    // scoverage
-//           |    mvn"org.scoverage::scalac-scoverage-runtime:${deps.scoverageVersion}"
-//           |  )
-//           |
-//           |  def compile = {
-//           |    BuildCtx.withFilesystemCheckerDisabled {
-//           |      os.remove(BuildCtx.workspaceRoot / os.up / "plugins.sc")
-//           |    }
-//           |    super.compile()
-//           |  }
-//           |}
-//           |""".stripMargin,
-//        createFolders = true
-//      )
-//
-//    }
-
+    // TODO: re-enable scoverage support for 1.x itest's
     PathRef(T.dest)
   }
 }
