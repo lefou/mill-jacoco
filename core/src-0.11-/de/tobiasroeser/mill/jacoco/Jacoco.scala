@@ -12,7 +12,7 @@ object Jacoco extends ExternalModule with JacocoReportModule with JacocoPlatform
    * Reads the Jacoco version from system environment variable `JACOCO_VERSION` or defaults to a hardcoded version.
    */
   override def jacocoVersion: Input[String] = T.input {
-    Success[String](T.env.getOrElse("JACOCO_VERSION", "0.8.7"))
+    Success[String](T.env.getOrElse("JACOCO_VERSION", "0.8.14"))
   }
 
 }
