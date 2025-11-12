@@ -12,8 +12,11 @@ object main extends JavaModule {
 }
 
 def verify(millVersion: String): Command[Unit] = Task.Command {
-  val jacocoPath = BuildCtx.workspaceRoot / "out/de/tobiasroeser/mill/jacoco/Jacoco/jacocoReportFull.dest"
-
+  val jacocoPath = if(millVersion.startsWith("1.0")) {
+    BuildCtx.workspaceRoot / "out/de/tobiasroeser/mill/jacoco/Jacoco/jacocoReportFull.dest"
+  } else {
+    BuildCtx.workspaceRoot / "out/de.tobiasroeser.mill.jacoco.Jacoco/jacocoReportFull.dest"
+  }
   val xml = jacocoPath / "jacoco.xml"
   assert(os.exists(jacocoPath))
   assert(os.exists(xml))
