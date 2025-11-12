@@ -11,19 +11,19 @@ object main extends JavaModule {
   object test extends JavaTests with JacocoTestModule with TestModule.Junit4
   // but here
   object customTest extends JavaTests with JacocoTestModule with TestModule.Junit4 {
-    override def mvnDeps: T[Seq[Dep]] = super.mvnDeps() ++ Seq(
-      mvn"com.novocode:junit-interface:0.11",
-      mvn"junit:junit:4.12"
-    )
+    override def junit4Version = "4.12"
   }
 }
 
 def verify(millVersion: String): Task.Command[Unit] = Task.Command {
-  val jacocoPath =
+  val jacocoPath = if(millVersion.startsWith("1.0")) {
     BuildCtx.workspaceRoot / "out/de/tobiasroeser/mill/jacoco/Jacoco/jacocoReportFull.dest"
+  } else {
+    BuildCtx.workspaceRoot / "out/de.tobiasroeser.mill.jacoco.Jacoco/jacocoReportFull.dest"
+  }
   val xml = jacocoPath / "jacoco.xml"
-  assert(os.exists(jacocoPath))
-  assert(os.exists(xml))
+  assert(os.exists(jacocoPath), s"Path does not exist: ${jacocoPath}")
+  assert(os.exists(xml), s"XML report does not exist: ${xml}")
   val contents = os.read(xml)
   assert(contents.contains("""<class name="test/Main" sourcefilename="Main.java">"""))
   assert(contents.contains("""<sourcefile name="Main.java">"""))
