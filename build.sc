@@ -1,13 +1,12 @@
 // mill plugins
-import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version::0.4.0`
-import $ivy.`de.tototec::de.tobiasroeser.mill.integrationtest::0.7.3`
+import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version::0.4.1`
+import $ivy.`de.tototec::de.tobiasroeser.mill.integrationtest::0.7.3-3-0685b8`
 import $ivy.`com.lihaoyi::mill-contrib-scoverage:`
-
 import mill._
 import mill.contrib.scoverage.ScoverageModule
-import mill.define.{Command, Cross, Sources, Target, Task, TaskModule}
+import mill.define.{Cross, Target, Task}
 import mill.scalalib._
-import mill.scalalib.api.ZincWorkerUtil
+import mill.scalalib.api.{JvmWorkerUtil, ZincWorkerUtil}
 import mill.scalalib.publish._
 import de.tobiasroeser.mill.integrationtest._
 import de.tobiasroeser.mill.vcs.version._
@@ -25,6 +24,7 @@ trait Deps {
   def millMainApi = ivy"com.lihaoyi::mill-main-api:${millVersion}"
   def millScalalib = ivy"com.lihaoyi::mill-scalalib:${millVersion}"
   def millScalalibApi = ivy"com.lihaoyi::mill-scalalib-api:${millVersion}"
+  def millLibs = mvn"com.lihaoyi::mill-libs:${millVersion}"
   def scalaTest = ivy"org.scalatest::scalatest:3.2.3"
   def slf4j = ivy"org.slf4j:slf4j-api:1.7.25"
 }
@@ -38,6 +38,12 @@ object Deps {
   )
 }
 
+object Deps_1 extends Deps {
+  override def millPlatform = "1" // only valid for exact milestone versions
+  override def millVersion = "1.0.0" // scala-steward:off
+  override def testWithMill = Seq("1.0.6", millVersion)
+  override def scalaVersion = "3.7.3"
+}
 object Deps_0_11 extends Deps {
   override def millPlatform = "0.11" // only valid for exact milestone versions
   override def millVersion = "0.11.0" // scala-steward:off
@@ -54,7 +60,7 @@ object Deps_0_9 extends Deps {
   override def testWithMill = Seq("0.9.12", millVersion)
 }
 
-val crossDeps = Seq(Deps_0_11, Deps_0_10, Deps_0_9)
+val crossDeps = Seq(Deps_1, Deps_0_11, Deps_0_10, Deps_0_9)
 val millApiVersions = crossDeps.map(x => x.millPlatform -> x)
 val millItestVersions = crossDeps.flatMap(x => x.testWithMill.map(_ -> x))
 
@@ -62,10 +68,14 @@ trait BaseModule extends ScalaModule with PublishModule with ScoverageModule wit
   def millApiVersion: String = crossValue
   def deps: Deps = millApiVersions.toMap.apply(millApiVersion)
   override def scalaVersion = deps.scalaVersion
-  override def artifactSuffix: T[String] = s"_mill${deps.millPlatform}_${artifactScalaVersion()}"
+  override def platformSuffix = s"_mill${deps.millPlatform}"
 
   override def ivyDeps = T {
-    Agg(ivy"${scalaOrganization()}:scala-library:${scalaVersion()}")
+    if (deps.millPlatform.startsWith("0.")) {
+      Agg(mvn"${scalaOrganization()}:scala-library:${scalaVersion()}")
+    } else {
+      Agg()
+    }
   }
 
   def publishVersion = VcsVersion.vcsState().format()
@@ -95,19 +105,27 @@ trait CoreCross extends BaseModule {
 
   override def skipIdea: Boolean = deps != crossDeps.head
 
-  override def compileIvyDeps = Agg(
-    deps.millMain,
-    deps.millScalalib
-  )
+  override def compileIvyDeps = {
+    if (deps.millPlatform.startsWith("0.")) Agg(
+      deps.millMain,
+      deps.millScalalib
+    )
+    else Agg(
+      deps.millLibs
+    )
 
-  override def sources = T.sources {
-    val versions =
-      ZincWorkerUtil.matchingVersions(millApiVersion) ++
-        ZincWorkerUtil.versionRanges(millApiVersion, millApiVersions.map(_._1))
-
-    super.sources() ++
-      versions.map(v => PathRef(millSourcePath / s"src-${v}"))
   }
+
+  val srcPaths = {
+    val versions = JvmWorkerUtil.matchingVersions(millApiVersion) ++
+      JvmWorkerUtil.versionRanges(millApiVersion, millApiVersions.map(_._1))
+
+    versions.map(v => moduleDir / s"src-${v}")
+  }
+
+  def localSources = Task.Sources(srcPaths.map(PathRef(_)))
+
+  override def sources = super.sources() ++ localSources()
 }
 
 object itest extends Cross[ItestCross](millItestVersions.map(_._1))
@@ -117,14 +135,16 @@ trait ItestCross extends MillIntegrationTestModule with Cross.Module[String] {
   override def millTestVersion = crossValue
   override def pluginsUnderTest = Seq(core(millApiVersion))
 
-  override def sources = T.sources {
+  val srcPaths = {
     val versions =
-      ZincWorkerUtil.matchingVersions(millApiVersion) ++
-        ZincWorkerUtil.versionRanges(millApiVersion, millApiVersions.map(_._1))
+      JvmWorkerUtil.matchingVersions(millApiVersion) ++
+        JvmWorkerUtil.versionRanges(millApiVersion, millApiVersions.map(_._1))
 
-    super.sources() ++
-      versions.map(v => PathRef(millSourcePath / s"src-${v}"))
+    versions.map(v => moduleDir / s"src-${v}")
   }
+  def localSources = Task.Sources(srcPaths.map(PathRef(_)))
+
+  override def sources = super.sources() ++ localSources()
 
   /** Replaces the plugin jar with a scoverage-enhanced version of it. */
   override def pluginUnderTestDetails: Task[Seq[(PathRef, (PathRef, (PathRef, (PathRef, (PathRef, Artifact)))))]] =
@@ -151,13 +171,17 @@ trait ItestCross extends MillIntegrationTestModule with Cross.Module[String] {
   }
 
   def generatedSharedSrc = T {
-    os.write(
-      T.dest / "shared.sc",
-      s"""
-         |import $$file.plugins
-         |import $$ivy.`org.scoverage::scalac-scoverage-runtime:${deps.scoverageVersion}`
-         |""".stripMargin
-    )
+    if (deps.millVersion.startsWith("0.")) {
+      os.write(
+        T.dest / "shared.sc",
+        s"""
+           |import $$file.plugins
+           |import $$ivy.`org.scoverage::scalac-scoverage-runtime:${deps.scoverageVersion}`
+           |""".stripMargin
+      )
+
+    }
+    // TODO: re-enable scoverage support for 1.x itest's
     PathRef(T.dest)
   }
 }
