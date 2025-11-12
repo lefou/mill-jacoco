@@ -7,10 +7,7 @@ import de.tobiasroeser.mill.jacoco.*
 
 object main extends JavaModule {
   object test extends JavaTests with JacocoTestModule with TestModule.Junit4 {
-    override def mvnDeps: T[Seq[Dep]] = super.mvnDeps() ++ Seq(
-      mvn"com.novocode:junit-interface:0.11",
-      mvn"junit:junit:4.12"
-    )
+    override def junit4Version = "4.12"
   }
 }
 
