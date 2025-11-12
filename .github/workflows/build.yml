@@ -75,7 +75,7 @@ jobs:
           java-version: 11
           distribution: temurin
 
-      - run: ./millw -i __.publishLocal testRepo
+      - run: ./millw -i __.publishLocal --localIvyRepo testRepo
 
       - name: Setup GPG secrets
         run: |
