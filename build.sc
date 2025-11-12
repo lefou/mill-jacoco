@@ -31,17 +31,18 @@ trait Deps {
 object Deps {
   def scoverageVersion = "2.4.0"
   def scalaVersion = "2.13.16"
+  def jacocoVersion = "0.8.14"
   val dummyDeps = Seq(
     ivy"org.scoverage:::scalac-scoverage-plugin:${scoverageVersion}",
     ivy"org.scoverage::scalac-scoverage-runtime:${scoverageVersion}",
-    ivy"org.jacoco:org.jacoco.cli:0.8.13"
+    ivy"org.jacoco:org.jacoco.cli:${jacocoVersion}"
   )
 }
 
 object Deps_1 extends Deps {
   override def millPlatform = "1" // only valid for exact milestone versions
   override def millVersion = "1.0.0" // scala-steward:off
-  override def testWithMill = Seq("1.0.6", millVersion)
+  override def testWithMill = Seq("1.1.0-RC1", "1.0.6", millVersion)
   override def scalaVersion = "3.7.4"
 }
 object Deps_0_11 extends Deps {
@@ -104,6 +105,22 @@ trait CoreCross extends BaseModule {
   override def artifactName = "de.tobiasroeser.mill.jacoco"
 
   override def skipIdea: Boolean = deps != crossDeps.head
+
+  def buildInfo = Task {
+    os.write(
+      Task.dest / "BuildInfo.scala",
+      s"""|package ${artifactName()}.internal
+          |object BuildInfo {
+          |  val pluginVersion = "${publishVersion()}"
+          |  val jacocoVersion = "${Deps.jacocoVersion}"
+          |}
+         |""".stripMargin,
+      createFolders = true
+    )
+    Seq(PathRef(Task.dest))
+  }
+
+  override def generatedSources = super.generatedSources() ++ buildInfo()
 
   override def compileIvyDeps = {
     if (deps.millPlatform.startsWith("0.")) Agg(
