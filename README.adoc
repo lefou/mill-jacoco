@@ -1,7 +1,6 @@
 = mill-jacoco - Coverage Reporting for Mill
 :example-version: 0.1.0
 :mill-example-version: 1.0.6
-:mill-example-platform: 1
 :mill-min-version: 0.9.7
 :java-package: de.tobiasroeser.mill.jacoco
 :project-home: https://github.com/lefou/mill-jacoco
