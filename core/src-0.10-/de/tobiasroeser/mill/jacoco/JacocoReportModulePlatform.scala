@@ -1,7 +1,9 @@
 package de.tobiasroeser.mill.jacoco
 
+import de.tobiasroeser.mill.jacoco.internal.BuildInfo
 import mill.{Agg, T}
 import mill.api.PathRef
+import mill.api.Result.Success
 import mill.define.{Input, Task}
 import mill.eval.Evaluator
 import mill.main.RunScript
