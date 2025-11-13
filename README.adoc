@@ -55,7 +55,7 @@ You can override the `JacocoReportModule.jacocoVersion` task or define the `JACO
 == Collect multiple coverage data sets
 
 By default, a preconfigured external Mill module is used to collect all coverage data.
-If you want to collect more than one data set, e.g. to separate unit test and integration test coverage, you can define your own modules
+If you want to collect more than one data set, e.g. to separate unit test and integration test coverage data, you can define your own instances of `JacocoReportModule` instead of using the pre-configured external module `{java-package}.Jacoco`.
 
 [,scala,subs="attributes+"]
 ----
