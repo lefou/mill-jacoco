@@ -41,7 +41,7 @@ To generate JaCoCo reports, run:
 
 == Configure the Jacoco Version
 
-You can override the `jacocoVersion` task or define the `JACOCO_VERSION` environment variable.
+You can override the `JacocoReportModule.jacocoVersion` task or define the `JACOCO_VERSION` environment variable.
 
 [,console]
 ----
