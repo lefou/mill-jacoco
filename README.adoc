@@ -19,6 +19,7 @@ To enable coverage data generation with JaCoCo, add the `JacocoTestModule` to yo
 .File: `build.mill`  (Mill {mill-example-version})
 [source,scala,subs="+attributes"]
 ----
+//| mill-version: {mill-example-version}
 //| mvnDeps: [ "de.tototec::{java-package}::{example-version}" ]
 package build
 
