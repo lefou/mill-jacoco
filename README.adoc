@@ -114,7 +114,7 @@ Please make sure to use the correct _mill platform suffix_ matching your used mi
 :artifact-suffix: _mill0.9_2.13
 * {artifact-url-base}{artifact-suffix}[`{artifact-suffix}`] for Mill 0.9.x
 
-Mill does this automatically for you, if you use a `::` after the artifact name in the dependency declaration, e.g. `"de.tototec::{java-package}::{example-version}"`
+Mill does this automatically for you, if you use a `::` after the artifact name in the dependency declaration, e.g. `"de.tototec::{java-package}##::##{example-version}"`
 
 == License
 
