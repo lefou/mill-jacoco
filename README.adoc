@@ -96,11 +96,10 @@ object main extends JavaModule {
 :artifact-suffix: _mill1_3
 :artifact-url-base: https://repo1.maven.org/maven2/de/tototec/de.tobiasroeser.mill.jacoco
 
-You can download binary releases from
+Binary releases of this plugin can be downloaded from
 {artifact-url-base}{artifact-suffix}/[Maven Central].
 
-
-Please make sure to use the correct _mill platform suffix_ matching your used mill version:
+Please make sure to use the correct _Mill Platform Suffix_, matching your used Mill version:
 
 :artifact-suffix: _mill1_3
 * {artifact-url-base}{artifact-suffix}[`{artifact-suffix}`] for Mill 1.x
