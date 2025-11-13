@@ -1,6 +1,7 @@
 = mill-jacoco - Coverage Reporting for Mill
-:version: 0.0.4-xxx
-:mill-platform: 1
+:example-version: 0.1.0
+:mill-example-version: 1.0.6
+:mill-example-platform: 1
 :mill-min-version: 0.9.7
 :java-package: de.tobiasroeser.mill.jacoco
 :project-home: https://github.com/lefou/mill-jacoco
@@ -15,9 +16,10 @@ You need at least Mill {mill-min-version} to use `mill-jacoco`.
 
 To enable coverage data generation with JaCoCo, add the `JacocoTestModule` to your test module.
 
+.File: `build.mill`  (Mill {mill-example-version})
 [source,scala,subs="+attributes"]
 ----
-//| mvnDeps: [ "de.tototec::{java-package}::{version}" ]
+//| mvnDeps: [ "de.tototec::{java-package}::{example-version}" ]
 package build
 
 import mill.*
@@ -39,13 +41,26 @@ To generate JaCoCo reports, run:
 
 
 == Download
+:artifact-suffix: _mill1_3
+:artifact-url-base: https://repo1.maven.org/maven2/de/tototec/de.tobiasroeser.mill.jacoco
 
 You can download binary releases from
-https://search.maven.org/artifact/de.tototec/{java-package}_mill{mill-platform}_2.13[Maven Central].
+{artifact-url-base}{artifact-suffix}/[Maven Central].
 
 
-Please make sure to use the correct _mill platform suffix_ matching your used mill version.
+Please make sure to use the correct _mill platform suffix_ matching your used mill version:
 
+:artifact-suffix: _mill1_3
+* {artifact-url-base}{artifact-suffix}[`{artifact-suffix}`] for Mill 1.x
+
+:artifact-suffix: _mill0.11_2.13
+* {artifact-url-base}{artifact-suffix}[`{artifact-suffix}`] for Mill 0.11.x and 0.12.x
+
+:artifact-suffix: _mill0.10_2.13
+* {artifact-url-base}{artifact-suffix}[`{artifact-suffix}`] for Mill 0.10.x
+
+:artifact-suffix: _mill0.9_2.13
+* {artifact-url-base}{artifact-suffix}[`{artifact-suffix}`] for Mill 0.9.x
 
 == License
 
@@ -55,7 +70,7 @@ This project is published under the https://www.apache.org/licenses/LICENSE-2.0[
 == About
 
 mill::
-  https://github.com/lihaoyi/mill[Mill] is a Scala-based open source build tool.
+  https://github.com/com-lihaoyi/mill[Mill] is a Scala-based open source build tool.
   In my opinion the best build tool for the JVM.
   It is fast, reliable and easy to understand.
 
@@ -75,9 +90,9 @@ Contributing::
 
 == Releases / Changelog
 
-=== `main`
+=== 0.1.0 - 2025-11-13
 
-* Add support for Mill 1.0
+* Added support for Mill 1.x
 
 === 0.0.4 - 2024-02-06
 
