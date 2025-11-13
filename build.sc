@@ -43,7 +43,7 @@ object Deps_1 extends Deps {
   override def millPlatform = "1" // only valid for exact milestone versions
   override def millVersion = "1.0.0" // scala-steward:off
   override def testWithMill = Seq("1.1.0-RC1", "1.0.6", millVersion)
-  override def scalaVersion = "3.7.3"
+  override def scalaVersion = "3.7.4"
 }
 object Deps_0_11 extends Deps {
   override def millPlatform = "0.11" // only valid for exact milestone versions
