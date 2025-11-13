@@ -1,6 +1,6 @@
 = mill-jacoco - Coverage Reporting for Mill
-:version: 0.0.4-xxx
-:mill-platform: 1
+:example-version: 0.1.0
+:mill-example-version: 1.0.6
 :mill-min-version: 0.9.7
 :java-package: de.tobiasroeser.mill.jacoco
 :project-home: https://github.com/lefou/mill-jacoco
@@ -15,9 +15,11 @@ You need at least Mill {mill-min-version} to use `mill-jacoco`.
 
 To enable coverage data generation with JaCoCo, add the `JacocoTestModule` to your test module.
 
+.File: `build.mill`  (Mill {mill-example-version})
 [source,scala,subs="+attributes"]
 ----
-//| mvnDeps: [ "de.tototec::{java-package}::{version}" ]
+//| mill-version: {mill-example-version}
+//| mvnDeps: [ "de.tototec::{java-package}::{example-version}" ]
 package build
 
 import mill.*
@@ -37,15 +39,81 @@ To generate JaCoCo reports, run:
 > mill {java-package}.Jacoco/jacocoReportFull
 ----
 
+== Configure the Jacoco Version
+
+You can override the `JacocoReportModule.jacocoVersion` task or define the `JACOCO_VERSION` environment variable.
+
+[,console]
+----
+> mill show de.tobiasroeser.mill.jacoco.Jacoco/jacocoVersion
+"0.8.14"
+
+> JACOCO_VERSION=0.8.13 mill show de.tobiasroeser.mill.jacoco.Jacoco/jacocoVersion
+"0.8.13"
+----
+
+== Collect multiple coverage data sets
+
+By default, a preconfigured external Mill module is used to collect all coverage data.
+If you want to collect more than one data set, e.g. to separate unit test and integration test coverage data, you can define your own instances of `JacocoReportModule` instead of using the pre-configured external module `{java-package}.Jacoco`.
+
+[,scala,subs="attributes+"]
+----
+//| mill-version: {mill-example-version}
+//| mvnDeps: [ "de.tototec::{java-package}::{example-version}" ]
+package build
+
+import mill.*
+import mill.scalalib.*
+
+import {java-package}.JacocoTestModule
+
+object jacocoUnit extends JacocoReportModule {
+  protected override lazy val millDiscover: Discover = Discover[this.type]
+}
+object jacocoIntegration extends JacocoReportModule {
+  protected override lazy val millDiscover: Discover = Discover[this.type]
+}
+
+object main extends JavaModule {
+  object test extends JavaTests with JacocoTestModule {
+    override def jacocoReportModule = ModuleRef(jacocoUnit)
+  }
+  object integrationTest extends JavaTests with JacocoTestModule {
+    override def jacocoReportModule = ModuleRef(jacocoIntegration)
+  }
+}
+----
+
+[,console,subs="+attributes"]
+----
+> mill __.test                                # Run all tests
+> mill jacocoUnit.jacocoReportFull            # Generate coverage report for unit tests
+> mill jacocoIntegration.jacocoReportFull     # Generate coverage report for integration tests
+----
 
 == Download
+:artifact-suffix: _mill1_3
+:artifact-url-base: https://repo1.maven.org/maven2/de/tototec/de.tobiasroeser.mill.jacoco
 
-You can download binary releases from
-https://search.maven.org/artifact/de.tototec/{java-package}_mill{mill-platform}_2.13[Maven Central].
+Binary releases of this plugin can be downloaded from
+{artifact-url-base}{artifact-suffix}/[Maven Central].
 
+Please make sure to use the correct _Mill Platform Suffix_, matching your used Mill version:
 
-Please make sure to use the correct _mill platform suffix_ matching your used mill version.
+:artifact-suffix: _mill1_3
+* {artifact-url-base}{artifact-suffix}[`{artifact-suffix}`] for Mill 1.x
 
+:artifact-suffix: _mill0.11_2.13
+* {artifact-url-base}{artifact-suffix}[`{artifact-suffix}`] for Mill 0.11.x and 0.12.x
+
+:artifact-suffix: _mill0.10_2.13
+* {artifact-url-base}{artifact-suffix}[`{artifact-suffix}`] for Mill 0.10.x
+
+:artifact-suffix: _mill0.9_2.13
+* {artifact-url-base}{artifact-suffix}[`{artifact-suffix}`] for Mill 0.9.x
+
+Mill does this automatically for you, if you use a `::` after the artifact name in the dependency declaration, e.g. `"de.tototec::{java-package}##::##{example-version}"`
 
 == License
 
@@ -55,15 +123,15 @@ This project is published under the https://www.apache.org/licenses/LICENSE-2.0[
 == About
 
 mill::
-  https://github.com/lihaoyi/mill[Mill] is a Scala-based open source build tool.
+  https://github.com/com-lihaoyi/mill[Mill] is a Scala-based open source build tool.
   In my opinion the best build tool for the JVM.
   It is fast, reliable and easy to understand.
 
 me::
 +
 --
-https://github.com/lefou/[I'm] a professional software developer and love to write and use open source software.
-I'm actively developing and maintaining mill as well as https://github.com/lefou?utf8=%E2%9C%93&tab=repositories&q=topic%3Amill&type=&language=[several mill plugins].
+https://github.com/lefou/[I am] a professional software developer and love to write and use open source software.
+I'm actively developing and maintaining Mill as well as https://github.com/lefou?utf8=%E2%9C%93&tab=repositories&q=topic%3Amill&type=&language=[several mill plugins].
 
 If you like my work, please star it on GitHub. You can also support me via https://github.com/sponsors/lefou[GitHub Sponsors].
 --
@@ -75,9 +143,9 @@ Contributing::
 
 == Releases / Changelog
 
-=== `main`
+=== 0.1.0 - 2025-11-13
 
-* Add support for Mill 1.0
+* Added support for Mill 1.x
 
 === 0.0.4 - 2024-02-06
 
