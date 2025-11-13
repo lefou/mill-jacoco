@@ -10,8 +10,14 @@ import mill.util.Version
 
 trait JacocoReportModulePlatform extends CoursierModule {
 
-  /** The Jacoco Version. */
-  def jacocoVersion: T[String]
+  /**
+   * The Jacoco version.
+   * Reads the Jacoco version from system environment variable `JACOCO_VERSION` or defaults to a hardcoded version.
+   */
+  def jacocoVersion: Input[String] = T.input {
+    Success[String](T.env.getOrElse("JACOCO_VERSION", BuildInfo.jacocoVersion))
+  }
+
 
   /** The Jacoco Classpath contains the tools used to generate reports from collected coverage data. */
   def jacocoClasspath: T[Agg[PathRef]] = T {

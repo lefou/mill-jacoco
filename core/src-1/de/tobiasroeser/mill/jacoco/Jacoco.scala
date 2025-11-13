@@ -10,11 +10,4 @@ object Jacoco extends ExternalModule with JacocoReportModule {
 
   protected override lazy val millDiscover: Discover = Discover[this.type]
 
-  /**
-   * Reads the Jacoco version from system environment variable `JACOCO_VERSION` or defaults to a hardcoded version.
-   */
-  override def jacocoVersion: T[String] = Task.Input {
-    Task.env.getOrElse("JACOCO_VERSION", BuildInfo.jacocoVersion)
-  }
-
 }
