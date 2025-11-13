@@ -39,6 +39,58 @@ To generate JaCoCo reports, run:
 > mill {java-package}.Jacoco/jacocoReportFull
 ----
 
+== Configure the Jacoco Version
+
+You can override the `jacocoVersion` task or define the `JACOCO_VERSION` environment variable.
+
+[,console]
+----
+> mill show de.tobiasroeser.mill.jacoco.Jacoco/jacocoVersion
+"0.8.14"
+
+> JACOCO_VERSION=0.8.13 mill show de.tobiasroeser.mill.jacoco.Jacoco/jacocoVersion
+"0.8.13"
+----
+
+== Collect multiple coverage data sets
+
+By default, a preconfigured external Mill module is used to collect all coverage data.
+If you want to collect more than one data set, e.g. to separate unit test and integration test coverage, you can define your own modules
+
+[,scala,subs="attributes+"]
+----
+//| mill-version: {mill-example-version}
+//| mvnDeps: [ "de.tototec::{java-package}::{example-version}" ]
+package build
+
+import mill.*
+import mill.scalalib.*
+
+import {java-package}.JacocoTestModule
+
+object jacocoUnit extends JacocoReportModule {
+  protected override lazy val millDiscover: Discover = Discover[this.type]
+}
+object jacocoIntegration extends JacocoReportModule {
+  protected override lazy val millDiscover: Discover = Discover[this.type]
+}
+
+object main extends JavaModule {
+  object test extends JavaTests with JacocoTestModule {
+    override def jacocoReportModule = ModuleRef(jacocoUnit)
+  }
+  object integrationTest extends JavaTests with JacocoTestModule {
+    override def jacocoReportModule = ModuleRef(jacocoIntegration)
+  }
+}
+----
+
+[,console,subs="+attributes"]
+----
+> mill __.test                                # Run all tests
+> mill jacocoUnit.jacocoReportFull            # Generate coverage report for unit tests
+> mill jacocoIntegration.jacocoReportFull     # Generate coverage report for integration tests
+----
 
 == Download
 :artifact-suffix: _mill1_3
