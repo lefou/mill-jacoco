@@ -1,7 +1,9 @@
 package de.tobiasroeser.mill.jacoco
 
+import de.tobiasroeser.mill.jacoco.internal.BuildInfo
 import mill.{Agg, T}
 import mill.api.PathRef
+import mill.api.Result.Success
 import mill.define.Task
 import mill.eval.Evaluator
 import mill.resolve.{Resolve, SelectMode}
@@ -10,8 +12,14 @@ import mill.util.Version
 
 trait JacocoReportModulePlatform extends CoursierModule {
 
-  /** The Jacoco Version. */
-  def jacocoVersion: T[String]
+  /**
+   * The Jacoco version.
+   * Reads the Jacoco version from system environment variable `JACOCO_VERSION` or defaults to a hardcoded version.
+   */
+  def jacocoVersion: T[String] = T.input {
+    Success[String](T.env.getOrElse("JACOCO_VERSION", BuildInfo.jacocoVersion))
+  }
+
 
   /** The Jacoco Classpath contains the tools used to generate reports from collected coverage data. */
   def jacocoClasspath: T[Agg[PathRef]] = T {
