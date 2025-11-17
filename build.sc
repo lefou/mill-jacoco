@@ -29,7 +29,7 @@ trait Deps {
   def slf4j = ivy"org.slf4j:slf4j-api:1.7.25"
 }
 object Deps {
-  def scoverageVersion = "2.4.1"
+  def scoverageVersion = "2.4.2"
   def scalaVersion = "2.13.17"
   def jacocoVersion = "0.8.14"
   val dummyDeps = Seq(
@@ -114,7 +114,7 @@ trait CoreCross extends BaseModule {
           |  val pluginVersion = "${publishVersion()}"
           |  val jacocoVersion = "${Deps.jacocoVersion}"
           |}
-         |""".stripMargin,
+          |""".stripMargin,
       createFolders = true
     )
     Seq(PathRef(Task.dest))
