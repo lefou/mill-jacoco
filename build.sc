@@ -31,7 +31,7 @@ trait Deps {
 object Deps {
   def scoverageVersion = "2.4.1"
   def scalaVersion = "2.13.17"
-  def jacocoVersion = "0.8.14"
+  def jacocoVersion = "0.8.15"
   val dummyDeps = Seq(
     ivy"org.scoverage:::scalac-scoverage-plugin:${scoverageVersion}",
     ivy"org.scoverage::scalac-scoverage-runtime:${scoverageVersion}",
@@ -114,7 +114,7 @@ trait CoreCross extends BaseModule {
           |  val pluginVersion = "${publishVersion()}"
           |  val jacocoVersion = "${Deps.jacocoVersion}"
           |}
-         |""".stripMargin,
+          |""".stripMargin,
       createFolders = true
     )
     Seq(PathRef(Task.dest))
